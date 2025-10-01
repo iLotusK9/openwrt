@@ -1,0 +1,145 @@
+From: Inochi Amaoto <inochiama@gmail.com>
+Subject: [PATCH 2/4] riscv: dts: sophgo: Move riscv cpu definition to a
+ separate file
+Date: Wed, 30 Apr 2025 09:26:51 +0800
+Content-Type: text/plain; charset="utf-8"
+
+As sg2000 and sg2002 can boot from an arm a53 core, it is not
+suitable to left the riscv cpu definition in the common peripheral
+header.
+
+Move the riscv related device into a separate header file, so the
+arm subsystem can reuse the common peripheral header.
+
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Signed-off-by: Inochi Amaoto <inochiama@gmail.com>
+---
+ arch/riscv/boot/dts/sophgo/cv1800b.dtsi     |  1 +
+ arch/riscv/boot/dts/sophgo/cv180x-cpus.dtsi | 36 +++++++++++++++++++++
+ arch/riscv/boot/dts/sophgo/cv1812h.dtsi     |  1 +
+ arch/riscv/boot/dts/sophgo/cv18xx.dtsi      | 29 -----------------
+ arch/riscv/boot/dts/sophgo/sg2002.dtsi      |  1 +
+ 5 files changed, 39 insertions(+), 29 deletions(-)
+ create mode 100644 arch/riscv/boot/dts/sophgo/cv180x-cpus.dtsi
+
+diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+index fc9e6b56790f..91bf4563e1f9 100644
+--- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
++++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+@@ -4,6 +4,7 @@
+  */
+ 
+ #include <dt-bindings/pinctrl/pinctrl-cv1800b.h>
++#include "cv180x-cpus.dtsi"
+ #include "cv18xx.dtsi"
+ 
+ / {
+diff --git a/arch/riscv/boot/dts/sophgo/cv180x-cpus.dtsi b/arch/riscv/boot/dts/sophgo/cv180x-cpus.dtsi
+new file mode 100644
+index 000000000000..93fd9e47a195
+--- /dev/null
++++ b/arch/riscv/boot/dts/sophgo/cv180x-cpus.dtsi
+@@ -0,0 +1,36 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
++ * Copyright (C) 2023 Inochi Amaoto <inochiama@outlook.com>
++ */
++
++/ {
++	cpus: cpus {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		timebase-frequency = <25000000>;
++
++		cpu0: cpu@0 {
++			compatible = "thead,c906", "riscv";
++			device_type = "cpu";
++			reg = <0>;
++			d-cache-block-size = <64>;
++			d-cache-sets = <512>;
++			d-cache-size = <65536>;
++			i-cache-block-size = <64>;
++			i-cache-sets = <128>;
++			i-cache-size = <32768>;
++			mmu-type = "riscv,sv39";
++			riscv,isa = "rv64imafdc";
++			riscv,isa-base = "rv64i";
++			riscv,isa-extensions = "i", "m", "a", "f", "d", "c", "zicntr", "zicsr",
++					       "zifencei", "zihpm";
++
++			cpu0_intc: interrupt-controller {
++				compatible = "riscv,cpu-intc";
++				interrupt-controller;
++				#interrupt-cells = <1>;
++			};
++		};
++	};
++};
+diff --git a/arch/riscv/boot/dts/sophgo/cv1812h.dtsi b/arch/riscv/boot/dts/sophgo/cv1812h.dtsi
+index fcea4376fb79..cc094b3f585f 100644
+--- a/arch/riscv/boot/dts/sophgo/cv1812h.dtsi
++++ b/arch/riscv/boot/dts/sophgo/cv1812h.dtsi
+@@ -5,6 +5,7 @@
+ 
+ #include <dt-bindings/interrupt-controller/irq.h>
+ #include <dt-bindings/pinctrl/pinctrl-cv1812h.h>
++#include "cv180x-cpus.dtsi"
+ #include "cv18xx.dtsi"
+ #include "cv181x.dtsi"
+ 
+diff --git a/arch/riscv/boot/dts/sophgo/cv18xx.dtsi b/arch/riscv/boot/dts/sophgo/cv18xx.dtsi
+index 805b694aa814..a4f957302094 100644
+--- a/arch/riscv/boot/dts/sophgo/cv18xx.dtsi
++++ b/arch/riscv/boot/dts/sophgo/cv18xx.dtsi
+@@ -12,35 +12,6 @@ / {
+ 	#address-cells = <1>;
+ 	#size-cells = <1>;
+ 
+-	cpus: cpus {
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		timebase-frequency = <25000000>;
+-
+-		cpu0: cpu@0 {
+-			compatible = "thead,c906", "riscv";
+-			device_type = "cpu";
+-			reg = <0>;
+-			d-cache-block-size = <64>;
+-			d-cache-sets = <512>;
+-			d-cache-size = <65536>;
+-			i-cache-block-size = <64>;
+-			i-cache-sets = <128>;
+-			i-cache-size = <32768>;
+-			mmu-type = "riscv,sv39";
+-			riscv,isa = "rv64imafdc";
+-			riscv,isa-base = "rv64i";
+-			riscv,isa-extensions = "i", "m", "a", "f", "d", "c", "zicntr", "zicsr",
+-					       "zifencei", "zihpm";
+-
+-			cpu0_intc: interrupt-controller {
+-				compatible = "riscv,cpu-intc";
+-				interrupt-controller;
+-				#interrupt-cells = <1>;
+-			};
+-		};
+-	};
+-
+ 	osc: oscillator {
+ 		compatible = "fixed-clock";
+ 		clock-output-names = "osc_25m";
+diff --git a/arch/riscv/boot/dts/sophgo/sg2002.dtsi b/arch/riscv/boot/dts/sophgo/sg2002.dtsi
+index df133831bd3e..6f02de9b0982 100644
+--- a/arch/riscv/boot/dts/sophgo/sg2002.dtsi
++++ b/arch/riscv/boot/dts/sophgo/sg2002.dtsi
+@@ -5,6 +5,7 @@
+ 
+ #include <dt-bindings/interrupt-controller/irq.h>
+ #include <dt-bindings/pinctrl/pinctrl-sg2002.h>
++#include "cv180x-cpus.dtsi"
+ #include "cv18xx.dtsi"
+ #include "cv181x.dtsi"
+ 
+-- 
+2.49.0
+

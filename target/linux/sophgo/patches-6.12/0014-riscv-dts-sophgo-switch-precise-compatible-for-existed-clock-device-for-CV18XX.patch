@@ -1,0 +1,59 @@
+From: Inochi Amaoto <inochiama@gmail.com>
+Subject: [PATCH v2 3/3] riscv: dts: sophgo: switch precise compatible for
+ existed clock device for CV18XX
+Date: Sun, 04 May 2025 18:45:52 +0800
+Content-Type: text/plain; charset="utf-8"
+
+replace newly added precise compatible with old one for existed
+clock device of CV18XX series SoCs.
+
+Signed-off-by: Inochi Amaoto <inochiama@gmail.com>
+Reviewed-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+---
+ arch/riscv/boot/dts/sophgo/cv1800b.dtsi | 2 +-
+ arch/riscv/boot/dts/sophgo/cv1812h.dtsi | 2 +-
+ arch/riscv/boot/dts/sophgo/sg2002.dtsi  | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+index 88707cc13fb4..90de978f69c1 100644
+--- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
++++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+@@ -29,7 +29,7 @@ pinctrl: pinctrl@3001000 {
+ 		};
+ 
+ 		clk: clock-controller@3002000 {
+-			compatible = "sophgo,cv1800-clk";
++			compatible = "sophgo,cv1800b-clk";
+ 			reg = <0x03002000 0x1000>;
+ 			clocks = <&osc>;
+ 			#clock-cells = <1>;
+diff --git a/arch/riscv/boot/dts/sophgo/cv1812h.dtsi b/arch/riscv/boot/dts/sophgo/cv1812h.dtsi
+index 0974955e4e05..9a2a314d3347 100644
+--- a/arch/riscv/boot/dts/sophgo/cv1812h.dtsi
++++ b/arch/riscv/boot/dts/sophgo/cv1812h.dtsi
+@@ -31,7 +31,7 @@ pinctrl: pinctrl@3001000 {
+ 		};
+ 
+ 		clk: clock-controller@3002000 {
+-			compatible = "sophgo,cv1810-clk";
++			compatible = "sophgo,cv1812h-clk";
+ 			reg = <0x03002000 0x1000>;
+ 			clocks = <&osc>;
+ 			#clock-cells = <1>;
+diff --git a/arch/riscv/boot/dts/sophgo/sg2002.dtsi b/arch/riscv/boot/dts/sophgo/sg2002.dtsi
+index 6f09c9199102..98001cce238e 100644
+--- a/arch/riscv/boot/dts/sophgo/sg2002.dtsi
++++ b/arch/riscv/boot/dts/sophgo/sg2002.dtsi
+@@ -31,7 +31,7 @@ pinctrl: pinctrl@3001000 {
+ 		};
+ 
+ 		clk: clock-controller@3002000 {
+-			compatible = "sophgo,sg2000-clk";
++			compatible = "sophgo,sg2002-clk", "sophgo,sg2000-clk";
+ 			reg = <0x03002000 0x1000>;
+ 			clocks = <&osc>;
+ 			#clock-cells = <1>;
+-- 
+2.49.0
+

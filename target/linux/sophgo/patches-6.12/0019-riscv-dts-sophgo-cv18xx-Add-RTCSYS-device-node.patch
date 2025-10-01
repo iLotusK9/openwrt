@@ -1,0 +1,44 @@
+From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Subject: [PATCH] riscv: dts: sophgo: cv18xx: Add RTCSYS device node
+Date: Tue, 13 May 2025 22:31:25 +0200
+Content-Type: text/plain; charset="utf-8"
+
+Add the RTCSYS MFD node: in Cvitek CV18xx and its successors RTC Subsystem
+is quite advanced and provides SoC power management functions as well.
+
+The SoC family also contains DW8051 block (Intel 8051 compatible CPU core)
+and an associated SRAM. The corresponding control registers are mapped into
+RTCSYS address space as well.
+
+Link: https://github.com/sophgo/sophgo-doc/tree/main/SG200X/TRM
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Reviewed-by: Inochi Amaoto <inochiama@gmail.com>
+---
+ arch/riscv/boot/dts/sophgo/cv180x.dtsi | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/sophgo/cv180x.dtsi b/arch/riscv/boot/dts/sophgo/cv180x.dtsi
+index ed06c3609fb2..280c45bd3b3d 100644
+--- a/arch/riscv/boot/dts/sophgo/cv180x.dtsi
++++ b/arch/riscv/boot/dts/sophgo/cv180x.dtsi
+@@ -307,5 +307,17 @@ dmac: dma-controller@4330000 {
+ 			snps,data-width = <2>;
+ 			status = "disabled";
+ 		};
++
++		rtc@5025000 {
++			compatible = "sophgo,cv1800b-rtc", "syscon";
++			reg = <0x5025000 0x2000>;
++			interrupts = <SOC_PERIPHERAL_IRQ(1) IRQ_TYPE_LEVEL_HIGH>,
++				     <SOC_PERIPHERAL_IRQ(2) IRQ_TYPE_LEVEL_HIGH>,
++				     <SOC_PERIPHERAL_IRQ(3) IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "alarm", "longpress", "vbat";
++			clocks = <&clk CLK_RTC_25M>,
++				 <&clk CLK_SRC_RTC_SYS_0>;
++			clock-names = "rtc", "mcu";
++		};
+ 	};
+ };
+-- 
+2.49.0
+

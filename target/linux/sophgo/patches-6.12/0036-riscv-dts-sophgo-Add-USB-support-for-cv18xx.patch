@@ -1,0 +1,53 @@
+From d34a3de51050ddc1c810d32ceb2482a8b9f8397d Mon Sep 17 00:00:00 2001
+From: Inochi Amaoto <inochiama@gmail.com>
+Date: Wed, 11 Jun 2025 16:24:51 +0800
+Subject: [PATCH] riscv: dts: sophgo: Add USB support for cv18xx
+
+Add USB controller node for cv18xx and enable it for Huashan Pi.
+
+Signed-off-by: Inochi Amaoto <inochiama@gmail.com>
+Tested-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+---
+ arch/riscv/boot/dts/sophgo/cv180x.dtsi            | 14 ++++++++++++++
+ arch/riscv/boot/dts/sophgo/cv1812h-huashan-pi.dts |  4 ++++
+ 2 files changed, 18 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/sophgo/cv180x.dtsi b/arch/riscv/boot/dts/sophgo/cv180x.dtsi
+index bc0cf45cdc94..4ae7159263d2 100644
+--- a/arch/riscv/boot/dts/sophgo/cv180x.dtsi
++++ b/arch/riscv/boot/dts/sophgo/cv180x.dtsi
+@@ -443,5 +443,19 @@ rtc@5025000 {
+ 				 <&clk CLK_SRC_RTC_SYS_0>;
+ 			clock-names = "rtc", "mcu";
+ 		};
++
++		usb: usb@4340000 {
++			compatible = "sophgo,cv1800b-usb";
++			reg = <0x04340000 0x10000>;
++			clocks = <&clk CLK_AXI4_USB>, <&clk CLK_APB_USB>;
++			clock-names = "otg", "utmi";
++			g-np-tx-fifo-size = <32>;
++			g-rx-fifo-size = <536>;
++			g-tx-fifo-size = <768 512 512 384 128 128>;
++			interrupts = <SOC_PERIPHERAL_IRQ(14) IRQ_TYPE_LEVEL_HIGH>;
++			phys = <&usbphy>;
++			phy-names = "usb2-phy";
++			status = "disabled";
++		};
+ 	};
+ };
+diff --git a/arch/riscv/boot/dts/sophgo/cv1812h-huashan-pi.dts b/arch/riscv/boot/dts/sophgo/cv1812h-huashan-pi.dts
+index 4a5835fa9e96..5accad99e2cb 100644
+--- a/arch/riscv/boot/dts/sophgo/cv1812h-huashan-pi.dts
++++ b/arch/riscv/boot/dts/sophgo/cv1812h-huashan-pi.dts
+@@ -86,3 +86,7 @@ &sdhci1 {
+ &uart0 {
+ 	status = "okay";
+ };
++
++&usb {
++	status = "okay";
++};
+-- 
+2.34.1
+

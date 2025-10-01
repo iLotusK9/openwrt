@@ -1,0 +1,31 @@
+From: Inochi Amaoto <inochiama@gmail.com>
+Subject: [PATCH v2 2/3] clk: sophgo: Add support for newly added precise
+ compatible
+Date: Sun, 04 May 2025 18:45:51 +0800
+Content-Type: text/plain; charset="utf-8"
+
+Add of device id definition for newly added precise compatible.
+
+Signed-off-by: Inochi Amaoto <inochiama@gmail.com>
+Reviewed-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+---
+ drivers/clk/sophgo/clk-cv1800.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/clk/sophgo/clk-cv1800.c b/drivers/clk/sophgo/clk-cv1800.c
+index e0c4dc347579..a4116ac1adcb 100644
+--- a/drivers/clk/sophgo/clk-cv1800.c
++++ b/drivers/clk/sophgo/clk-cv1800.c
+@@ -1519,7 +1519,9 @@ static int cv1800_clk_probe(struct platform_device *pdev)
+ 
+ static const struct of_device_id cv1800_clk_ids[] = {
+ 	{ .compatible = "sophgo,cv1800-clk", .data = &cv1800_desc },
++	{ .compatible = "sophgo,cv1800b-clk", .data = &cv1800_desc },
+ 	{ .compatible = "sophgo,cv1810-clk", .data = &cv1810_desc },
++	{ .compatible = "sophgo,cv1812h-clk", .data = &cv1810_desc },
+ 	{ .compatible = "sophgo,sg2000-clk", .data = &sg2000_desc },
+ 	{ }
+ };
+-- 
+2.49.0
+

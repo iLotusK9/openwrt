@@ -1,0 +1,50 @@
+From: Inochi Amaoto <inochiama@gmail.com>
+Subject: [PATCH v2 1/3] dt-bindings: clock: sophgo: Use precise compatible
+ for CV1800 series SoC
+Date: Sun, 04 May 2025 18:45:50 +0800
+Content-Type: text/plain; charset="utf-8"
+
+As previous binding uses a wildcard compatible for existed clock device
+of CV1800 series SoC, it is not suitable for existed requirement. The
+only exception is sophgo,sg2000-clk, it does match a real device, so
+keep it as is.
+
+Add new precise compatible for existed clock devices of CV1800 series
+SoCs and make old wildcard compatible deprecated.
+
+Signed-off-by: Inochi Amaoto <inochiama@gmail.com>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+---
+ .../bindings/clock/sophgo,cv1800-clk.yaml        | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/clock/sophgo,cv1800-clk.yaml b/Documentation/devicetree/bindings/clock/sophgo,cv1800-clk.yaml
+index 59ef41adb539..379ce3e9e391 100644
+--- a/Documentation/devicetree/bindings/clock/sophgo,cv1800-clk.yaml
++++ b/Documentation/devicetree/bindings/clock/sophgo,cv1800-clk.yaml
+@@ -11,10 +11,18 @@ maintainers:
+ 
+ properties:
+   compatible:
+-    enum:
+-      - sophgo,cv1800-clk
+-      - sophgo,cv1810-clk
+-      - sophgo,sg2000-clk
++    oneOf:
++      - enum:
++          - sophgo,cv1800b-clk
++          - sophgo,cv1812h-clk
++          - sophgo,sg2000-clk
++      - items:
++          - const: sophgo,sg2002-clk
++          - const: sophgo,sg2000-clk
++      - const: sophgo,cv1800-clk
++        deprecated: true
++      - const: sophgo,cv1810-clk
++        deprecated: true
+ 
+   reg:
+     maxItems: 1
+-- 
+2.49.0
+

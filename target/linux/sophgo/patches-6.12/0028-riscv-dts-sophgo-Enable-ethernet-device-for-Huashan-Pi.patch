@@ -1,0 +1,35 @@
+From: Inochi Amaoto <inochiama@gmail.com>
+Subject: [PATCH 3/3] riscv: dts: sophgo: Enable ethernet device for Huashan
+ Pi
+Date: Thu, 03 Jul 2025 10:15:58 +0800
+Content-Type: text/plain; charset="utf-8"
+
+Enable ethernet controller and mdio multiplexer device on Huashan Pi.
+
+Signed-off-by: Inochi Amaoto <inochiama@gmail.com>
+---
+ arch/riscv/boot/dts/sophgo/cv1812h-huashan-pi.dts | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/sophgo/cv1812h-huashan-pi.dts b/arch/riscv/boot/dts/sophgo/cv1812h-huashan-pi.dts
+index 26b57e15adc1..4a5835fa9e96 100644
+--- a/arch/riscv/boot/dts/sophgo/cv1812h-huashan-pi.dts
++++ b/arch/riscv/boot/dts/sophgo/cv1812h-huashan-pi.dts
+@@ -55,6 +55,14 @@ &emmc {
+ 	non-removable;
+ };
+ 
++&gmac0 {
++	status = "okay";
++};
++
++&mdio {
++	status = "okay";
++};
++
+ &sdhci0 {
+ 	status = "okay";
+ 	bus-width = <4>;
+-- 
+2.50.0
+

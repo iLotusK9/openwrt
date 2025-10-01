@@ -1,0 +1,33 @@
+From: Inochi Amaoto <inochiama@gmail.com>
+Subject: [PATCH 2/2] usb: dwc2: follow compatible string change for Sophgo
+ CV18XX/SG200X series SoC
+Date: Wed, 18 Jun 2025 11:11:30 +0800
+Content-Type: text/plain; charset="utf-8"
+
+As the wildcard name is dropped and favor new compatible string
+which match a real SoC, and it is not used for any board at now.
+
+Rename it to sophgo,cv1800b-usb to match the binding change.
+
+Signed-off-by: Inochi Amaoto <inochiama@gmail.com>
+Acked-by: Minas Harutyunyan <hminas@synopsys.com>
+---
+ drivers/usb/dwc2/params.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
+index 4d73fae80b12..ea6bd537e337 100644
+--- a/drivers/usb/dwc2/params.c
++++ b/drivers/usb/dwc2/params.c
+@@ -334,7 +334,7 @@ const struct of_device_id dwc2_of_match_table[] = {
+ 	  .data = dwc2_set_amlogic_a1_params },
+ 	{ .compatible = "amcc,dwc-otg", .data = dwc2_set_amcc_params },
+ 	{ .compatible = "apm,apm82181-dwc-otg", .data = dwc2_set_amcc_params },
+-	{ .compatible = "sophgo,cv1800-usb",
++	{ .compatible = "sophgo,cv1800b-usb",
+ 	  .data = dwc2_set_cv1800_params },
+ 	{ .compatible = "st,stm32f4x9-fsotg",
+ 	  .data = dwc2_set_stm32f4x9_fsotg_params },
+-- 
+2.49.0
+

@@ -1,0 +1,67 @@
+From: Inochi Amaoto <inochiama@gmail.com>
+Subject: [PATCH 3/4] riscv: dts: sophgo: rename header file cv18xx.dtsi to
+ cv180x.dtsi
+Date: Wed, 30 Apr 2025 09:26:52 +0800
+Content-Type: text/plain; charset="utf-8"
+
+As the cv18xx.dtsi serves as a common peripheral header for all
+riscv cv180x/cv181x/sg200x SoCs, it not cover the entire cv18xx
+series as there is cv182x and cv183x. So rename the header file
+to make it precise.
+
+Signed-off-by: Inochi Amaoto <inochiama@gmail.com>
+Reviewed-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+---
+ arch/riscv/boot/dts/sophgo/cv1800b.dtsi                 | 2 +-
+ arch/riscv/boot/dts/sophgo/{cv18xx.dtsi => cv180x.dtsi} | 0
+ arch/riscv/boot/dts/sophgo/cv1812h.dtsi                 | 2 +-
+ arch/riscv/boot/dts/sophgo/sg2002.dtsi                  | 2 +-
+ 4 files changed, 3 insertions(+), 3 deletions(-)
+ rename arch/riscv/boot/dts/sophgo/{cv18xx.dtsi => cv180x.dtsi} (100%)
+
+diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+index 91bf4563e1f9..d0a627c086fb 100644
+--- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
++++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+@@ -5,7 +5,7 @@
+ 
+ #include <dt-bindings/pinctrl/pinctrl-cv1800b.h>
+ #include "cv180x-cpus.dtsi"
+-#include "cv18xx.dtsi"
++#include "cv180x.dtsi"
+ 
+ / {
+ 	compatible = "sophgo,cv1800b";
+diff --git a/arch/riscv/boot/dts/sophgo/cv18xx.dtsi b/arch/riscv/boot/dts/sophgo/cv180x.dtsi
+similarity index 100%
+rename from arch/riscv/boot/dts/sophgo/cv18xx.dtsi
+rename to arch/riscv/boot/dts/sophgo/cv180x.dtsi
+diff --git a/arch/riscv/boot/dts/sophgo/cv1812h.dtsi b/arch/riscv/boot/dts/sophgo/cv1812h.dtsi
+index cc094b3f585f..d9580a2e1e7f 100644
+--- a/arch/riscv/boot/dts/sophgo/cv1812h.dtsi
++++ b/arch/riscv/boot/dts/sophgo/cv1812h.dtsi
+@@ -6,7 +6,7 @@
+ #include <dt-bindings/interrupt-controller/irq.h>
+ #include <dt-bindings/pinctrl/pinctrl-cv1812h.h>
+ #include "cv180x-cpus.dtsi"
+-#include "cv18xx.dtsi"
++#include "cv180x.dtsi"
+ #include "cv181x.dtsi"
+ 
+ / {
+diff --git a/arch/riscv/boot/dts/sophgo/sg2002.dtsi b/arch/riscv/boot/dts/sophgo/sg2002.dtsi
+index 6f02de9b0982..60709df12a22 100644
+--- a/arch/riscv/boot/dts/sophgo/sg2002.dtsi
++++ b/arch/riscv/boot/dts/sophgo/sg2002.dtsi
+@@ -6,7 +6,7 @@
+ #include <dt-bindings/interrupt-controller/irq.h>
+ #include <dt-bindings/pinctrl/pinctrl-sg2002.h>
+ #include "cv180x-cpus.dtsi"
+-#include "cv18xx.dtsi"
++#include "cv180x.dtsi"
+ #include "cv181x.dtsi"
+ 
+ / {
+-- 
+2.49.0
+

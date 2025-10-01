@@ -1,0 +1,30 @@
+From: Inochi Amaoto <inochiama@gmail.com>
+Subject: [PATCH v4 2/4] reset: simple: add support for Sophgo CV1800B
+Date: Tue, 17 Jun 2025 15:01:40 +0800
+Content-Type: text/plain; charset="utf-8"
+
+Reuse reset-simple driver for the Sophgo CV1800B reset generator.
+
+Signed-off-by: Inochi Amaoto <inochiama@gmail.com>
+Reviewed-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Tested-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+---
+ drivers/reset/reset-simple.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/reset/reset-simple.c b/drivers/reset/reset-simple.c
+index 276067839830..79e94ecfe4f5 100644
+--- a/drivers/reset/reset-simple.c
++++ b/drivers/reset/reset-simple.c
+@@ -151,6 +151,8 @@ static const struct of_device_id reset_simple_dt_ids[] = {
+ 	{ .compatible = "snps,dw-high-reset" },
+ 	{ .compatible = "snps,dw-low-reset",
+ 		.data = &reset_simple_active_low },
++	{ .compatible = "sophgo,cv1800b-reset",
++		.data = &reset_simple_active_low },
+ 	{ .compatible = "sophgo,sg2042-reset",
+ 		.data = &reset_simple_active_low },
+ 	{ /* sentinel */ },
+-- 
+2.49.0
+
