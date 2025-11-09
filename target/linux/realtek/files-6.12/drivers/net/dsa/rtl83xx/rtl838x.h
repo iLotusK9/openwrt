@@ -406,6 +406,27 @@
 #define RTL839X_SPCL_TRAP_SWITCH_MAC_CTRL	(0x1068)
 #define RTL839X_SPCL_TRAP_SWITCH_IPV4_ADDR_CTRL	(0x106C)
 #define RTL839X_SPCL_TRAP_CRC_CTRL		(0x1070)
+
+#define RTL930X_BANDWIDTH_CTRL_EGRESS(port)	(0x7660 + (port * 16))
+#define RTL930X_BANDWIDTH_CTRL_INGRESS(port)	(0x8068 + (port * 4))
+#define RTL930X_BANDWIDTH_CTRL_MAX_BURST	(64 * 1000)
+#define RTL930X_BANDWIDTH_CTRL_INGRESS_BURST_HIGH_ON(port) \
+						(0x80DC + (port * 8))
+#define RTL930X_BANDWIDTH_CTRL_INGRESS_BURST_HIGH_OFF(port) \
+						(0x80E0 + (port * 8))
+#define RTL930X_BANDWIDTH_CTRL_INGRESS_BURST_MAX \
+						GENMASK(30, 0)
+
+#define RTL931X_BANDWIDTH_CTRL_EGRESS(port)	(0x2164 + (port * 8))
+#define RTL931X_BANDWIDTH_CTRL_INGRESS(port)	(0xe008 + (port * 8))
+
+#define RTL93XX_BANDWIDTH_CTRL_RATE_MAX		GENMASK(19, 0)
+#define RTL93XX_BANDWIDTH_CTRL_ENABLE		BIT(20)
+#define RTL931X_BANDWIDTH_CTRL_MAX_BURST	GENMASK(15, 0)
+
+#define RTL930X_INGRESS_FC_CTRL(port)		(0x81CC + ((port / 29) * 4))
+#define RTL930X_INGRESS_FC_CTRL_EN(port)	BIT(port % 29)
+
 /* special port action controls */
 /* values:
  *      0 = FORWARD (default)
@@ -582,6 +603,17 @@ typedef enum {
 #define RTL931X_LED_PORT_FIB_MASK_CTRL		(0x065c)
 #define RTL931X_LED_PORT_COMBO_MASK_CTRL	(0x0664)
 
+#define RTL931X_LED_GLB_ACTIVE_LOW BIT(21)
+
+#define RTL931X_LED_SETX_0_CTRL(x) (RTL931X_LED_SET0_0_CTRL - (x * 8))
+#define RTL931X_LED_SETX_1_CTRL(x) (RTL931X_LED_SETX_0_CTRL(x) - 4)
+
+/* get register for given set and led in the set */
+#define RTL931X_LED_SETX_LEDY(x,y) (RTL931X_LED_SETX_0_CTRL(x) - 4 * (y / 2))
+
+/* get shift for given led in any set */
+#define RTL931X_LED_SET_LEDX_SHIFT(x) (16 * (x % 2))
+
 #define MAX_VLANS 4096
 #define MAX_LAGS 16
 #define MAX_PRIOS 8
@@ -609,7 +641,6 @@ enum phy_type {
 	PHY_RTL8218B_EXT = 3,
 	PHY_RTL8214FC = 4,
 	PHY_RTL839X_SDS = 5,
-	PHY_RTL930X_SDS = 6,
 };
 
 enum pbvlan_type {
@@ -669,15 +700,17 @@ struct rtldsa_counter_state {
 };
 
 struct rtl838x_port {
-	bool enable;
+	bool enable:1;
+	bool phy_is_integrated:1;
+	bool is10G:1;
+	bool is2G5:1;
+	bool isolated:1;
+	bool rate_police_egress:1;
+	bool rate_police_ingress:1;
 	u64 pm;
 	u16 pvid;
 	bool eee_enabled;
 	enum phy_type phy;
-	bool phy_is_integrated;
-	bool is10G;
-	bool is2G5;
-	int sds_num;
 	int led_set;
 	int leds_on_this_port;
 	struct rtldsa_counter_state counters;
@@ -997,6 +1030,23 @@ struct rtl83xx_route {
 	struct rtl93xx_route_attr attr;
 };
 
+/**
+ * struct rtldsa_mirror_config - Mirror configuration for specific group and port
+ */
+struct rtldsa_mirror_config {
+	/** @ctrl: control register for mirroring group */
+	int ctrl;
+
+	/** @spm: register for the destination port members */
+	int spm;
+
+	/** @dpm: register for the source port members */
+	int dpm;
+
+	/** @val: @ctrl register settings to enable mirroring */
+	u32 val;
+};
+
 struct rtl838x_reg {
 	void (*mask_port_reg_be)(u64 clear, u64 set, int reg);
 	void (*set_port_reg_be)(u64 set, int reg);
@@ -1012,7 +1062,6 @@ struct rtl838x_reg {
 	void (*traffic_enable)(int source, int dest);
 	void (*traffic_disable)(int source, int dest);
 	void (*traffic_set)(int source, u64 dest_matrix);
-	u64 (*traffic_get)(int source);
 	int l2_ctrl_0;
 	int l2_ctrl_1;
 	int smi_poll_ctrl;
@@ -1047,9 +1096,11 @@ struct rtl838x_reg {
 	int  (*l2_port_new_salrn)(int port);
 	int  (*l2_port_new_sa_fwd)(int port);
 	int (*set_ageing_time)(unsigned long msec);
-	int mir_ctrl;
-	int mir_dpm;
-	int mir_spm;
+	int (*get_mirror_config)(struct rtldsa_mirror_config *config, int group, int port);
+	int (*port_rate_police_add)(struct dsa_switch *ds, int port,
+				    const struct flow_action_entry *act, bool ingress);
+	int (*port_rate_police_del)(struct dsa_switch *ds, int port, struct flow_cls_offload *cls,
+				    bool ingress);
 	u64 (*read_l2_entry_using_hash)(u32 hash, u32 position, struct rtl838x_l2_entry *e);
 	void (*write_l2_entry_using_hash)(u32 hash, u32 pos, struct rtl838x_l2_entry *e);
 	u64 (*read_cam)(int idx, struct rtl838x_l2_entry *e);
